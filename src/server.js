@@ -10,8 +10,22 @@ const productosRoutes = require("./routes/productos.routes");
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+const allowedOrigins = [
+    "http://localhost:4200",
+    "https://fe-dpp-black.vercel.app",
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Origen no permitido por CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));app.use(express.json());
 
 app.get("/", (req, res) => {
     res.json({
